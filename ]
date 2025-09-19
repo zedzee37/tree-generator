@@ -1,0 +1,38 @@
+class KdNode:
+    def __init__(self, point):
+        self.point = point
+        self.left = None
+        self.right = None
+
+
+class StaticKdTree:
+    def __init__(self, points, k):
+        self.head = None
+        self.k = k
+
+        sorted_axis = []
+
+        for axis in range(k):
+            sorted_axis.append(sorted(points, key=lambda pt: pt[axis])) 
+
+        self._build_tree(points, sorted_axis, 0)
+
+    def _build_tree(self, points, sorted_axis, depth):
+        axis = depth % self.k 
+        
+        pts_sorted = sorted_axis[axis]
+        median_idx = len(pts_sorted) // 2
+        median_pt = pts_sorted[median_idx]
+
+    def nearest_neighbor(self, point):
+        pass
+
+
+import random as rand
+
+rand.seed(0)
+random_points = []
+for i in range(100):
+    random_points.append((rand.randint(0, 100), rand.randint(0, 100)))
+
+tree = StaticKdTree(random_points, 2)
