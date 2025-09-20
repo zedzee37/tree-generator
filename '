@@ -40,53 +40,30 @@ class StaticKdTree:
         return node
 
     def nearest_neighbor(self, point):
-        def distance_squared(p1, p2):
+        def distance_squared(p1, p2, k):
             distance_sqrd = 0
 
-            for i in range(self.k):
-                distance_sqrd += (p1[i] - p2[i])**2
+            for i in range(k):
+                distance_sqrd += p1[i]**2
+                distance_sqrd += p2[i]**2
             
             return distance_sqrd
+        
 
-        def closest(n1, n2, point):
-            d1 = distance_squared(n1.point, point)
-            d2 = distance_squared(n2.point, point)
-            
-            if d1 < d2:
-                return n1
+        def distance(p1, p2, k):
+            return math.sqrt(distance_squared(p1, p2, k))
 
-            return n2
 
         def recurse(depth, node, best):
-            if node == None:
-                return best
-
             axis = depth % self.k
 
-            should_go_left = point[axis] < node.point[axis]
-            if should_go_left:
-                next_branch = node.left
-                other_branch = node.right
-            else:
-                next_branch = node.right
-                other_branch = node.left
+            has_left = node.left is not None
+            has_right = node.right is not None
 
-            tmp = recurse(depth, next_branch, best)
-            best = closest(best, tmp, point)
+            if not has_left:
+                return best
 
-            best_distance_sqrd = distance_squared(point, best.point)
-            dst = distance_squared(point, node.point)
-
-            if dst < best_distance_sqrd:
-                best = node
-
-            dst_to_axis = point[axis] - node.point[axis]
-            if dst_to_axis < dst:
-                tmp = recurse(depth, other_branch, best)
-                best = closest(best, tmp, point)
-
-            return best
-
+        
         return recurse(0, self.head, self.head)
 
 
@@ -98,4 +75,3 @@ for i in range(100):
     random_points.append((rand.randint(0, 100), rand.randint(0, 100)))
 
 tree = StaticKdTree(random_points, 2)
-closest_node = tree.nearest_neighbor((10, 10))
