@@ -1,0 +1,24 @@
+{
+  "name": "tree-generator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zedzee37/tree-generator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zedzee37/tree-generator/issues"
+  },
+  "homepage": "https://github.com/zedzee37/tree-generator#readme",
+  "dependencies": {
+    "@types/p5": "^1.7.6",
+    "p5": "^2.0.5"
+  }
+}
