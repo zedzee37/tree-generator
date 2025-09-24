@@ -209,6 +209,8 @@ function draw() {
 		createVector(100, 100),
 		createVector(200, 134),
 	];
+
+	strokeWeight(5);
 	let spline = getCatmullRomSpline(pts, 10);
 
 	drawPoints(spline, createVector(0, 0));
