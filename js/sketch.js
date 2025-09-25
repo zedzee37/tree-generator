@@ -184,6 +184,11 @@ function approxPointVelocity(points, i) {
 	return p5.Vector.sub(nextPoint, prevPoint);
 }
 
+/**
+ *
+ * @param {Array<Vector>} points
+ * @param {Vector} offset
+ */
 function drawPoints(points, offset) {
 	let prevPoint = offset;
 	for (let i = 0; i < points.length; i++) {
