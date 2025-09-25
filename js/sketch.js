@@ -164,7 +164,7 @@ function extrapolateEndPoints(points) {
 	let endPointSlope = p5.Vector.sub(endPoint, prevPoint);
 	let extrapolatedEndPoint = p5.Vector.add(endPoint, endPointSlope);
 
-	return [startPoint, ...points, endPoint];
+	return [extrapolatedStartPoint, ...points, extrapolatedEndPoint];
 }
 
 /**
