@@ -207,7 +207,7 @@ function draw() {
 		createVector(10, 10),
 		createVector(60, 30),
 		createVector(100, 100),
-		createVector(200, 134),
+		createVector(mouseX, mouseY),
 	];
 
 	strokeWeight(5);
