@@ -48,10 +48,17 @@ function Quad(p1, p2) {
             let width = scaledQuad.width();
             let height = scaledQuad.height();
 
-            resultQuads.push(scaledQuad);
-            resultQuads.push(scaledQuad.offset(createVector(width, 0)));
-            resultQuads.push(scaledQuad.offset(createVector(0, height)));
-            resultQuads.push(scaledQuad.offset(createVector(width, height)));
+            let p1Scaled = p5.Vector.mult(p1, 0.5);
+            resultQuads.push(scaledQuad.offset(p1Scaled));
+            resultQuads.push(
+                scaledQuad.offset(createVector(width, 0)).offset(p1Scaled),
+            );
+            resultQuads.push(
+                scaledQuad.offset(createVector(0, height)).offset(p1Scaled),
+            );
+            resultQuads.push(
+                scaledQuad.offset(createVector(width, height)).offset(p1Scaled),
+            );
 
             return resultQuads;
         },
@@ -118,7 +125,7 @@ function QuadTree(maxFill, maxBounds) {
  */
 function QuadNode(bounds, maxFill) {
     return {
-        children: [],
+        children: new Set([]),
         childNodes: [],
         maxFill: maxFill,
         quad: bounds,
@@ -126,15 +133,12 @@ function QuadNode(bounds, maxFill) {
         split: function () {
             let splitQuads = this.quad.split();
 
-            // TODO: finish this
             for (let i = 0; i < splitQuads.length; i++) {
                 let quad = splitQuads[i];
                 this.childNodes.push(QuadNode(quad, this.maxFill));
             }
 
-            for (let i = 0; i < this.children.length; i++) {
-                let point = this.children[i];
-
+            this.children.forEach((point) => {
                 let targetChild;
                 for (let j = 0; j < this.childNodes.length; j++) {
                     let node = this.childNodes[j];
@@ -145,13 +149,12 @@ function QuadNode(bounds, maxFill) {
                     }
                 }
 
-                // ?????
-                if (targetChild == undefined) {
-                    continue;
+                if (targetChild == null) {
+                    return;
                 }
 
                 targetChild.insert(point);
-            }
+            });
 
             // means you cannot insert into this
             this.children = null;
@@ -186,12 +189,15 @@ function QuadNode(bounds, maxFill) {
                 return this.insertToChildren(point);
             }
 
-            if (this.children.length + 1 > this.maxFill) {
+            if (
+                this.children.size + 1 > this.maxFill &&
+                !this.children.has(point)
+            ) {
                 this.split();
                 return this.insertToChildren(point);
             }
 
-            this.children.push(point);
+            this.children.add(point);
             return true;
         },
     };
@@ -313,22 +319,24 @@ function drawPoints(points, offset) {
  * @param {QuadNode} quadNode
  */
 function drawQuadTree(quadNode) {
-    quadNode.quad.draw(createVector(0, 0));
-
-    quadNode.childNodes.forEach((node) => drawQuadTree(node));
     if (quadNode.children != null) {
+        quadNode.quad.draw(createVector(0, 0));
         quadNode.children.forEach((point) => {
             circle(point.x, point.y, 5);
         });
+    }
+
+    if (quadNode.childNodes != undefined) {
+        quadNode.childNodes.forEach((node) => drawQuadTree(node));
     }
 }
 
 function setup() {
     quadTree = QuadTree(1, Quad(createVector(0, 0), createVector(400, 400)));
-    quadTree.insert(createVector(90, 90));
-    quadTree.insert(createVector(190, 90));
-    quadTree.insert(createVector(290, 90));
-    quadTree.insert(createVector(50, 90));
+    quadTree.insert(createVector(210, 90));
+    quadTree.insert(createVector(50, 50));
+    quadTree.insert(createVector(49, 50));
+    quadTree.insert(createVector(390, 80));
 
     createCanvas(400, 400);
 }
