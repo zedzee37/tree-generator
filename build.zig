@@ -1,4 +1,7 @@
 const std = @import("std");
+const builtin = std.builtin;
+
+fn add_tests()
 
 // Although this function looks imperative, note that its job is to
 // declaratively construct a build graph that will be executed by an external
@@ -28,6 +31,18 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
+    const vec_mod = b.createModule(.{
+        .root_source_file = b.path("src/vec/root.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
+    const r_tree_mod = b.createModule(.{
+        .root_source_file = b.path("src/r_tree/root.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
     // Now, we will create a static library based on the module we created above.
     // This creates a `std.Build.Step.Compile`, which is the build step responsible
     // for actually invoking the compiler.
@@ -47,9 +62,15 @@ pub fn build(b: *std.Build) void {
     const lib_unit_tests = b.addTest(.{
         .root_module = lib_mod,
     });
+    const vec_unit_tests = b.addTest(.{
+        .root_module = lib_mod,
+    });
+    const r_tree_unit_tests = b.addTest(.{
+        .root_module = lib_mod,
+    });
 
     const run_lib_unit_tests = b.addRunArtifact(lib_unit_tests);
 
-    const test_step = b.step("test", "Run unit tests");
+    const test_step = b.step("test", "Run all unit tests");
     test_step.dependOn(&run_lib_unit_tests.step);
 }
